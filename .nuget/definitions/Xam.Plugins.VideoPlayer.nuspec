@@ -6,7 +6,7 @@
     <title>Xamarin Plugins - Video Player</title>
     <authors>Shawn Anderson</authors>
     <owners>Shawn Anderson</owners>
-    <licenseUrl></licenseUrl>
+    <licenseUrl>https://raw.githubusercontent.com/ravensorb/XamVideoPlayer/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/ravensorb/Xam-Plugins-VideoPlayer</projectUrl>
     <iconUrl></iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
