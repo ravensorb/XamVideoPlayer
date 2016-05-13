@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Xam.Plugins.VideoPlayer</id>
+    <version>1.0.0-pre01</version>
+    <title>Xamarin Plugins - Video Player</title>
+    <authors>Shawn Anderson</authors>
+    <owners>Shawn Anderson</owners>
+    <licenseUrl></licenseUrl>
+    <projectUrl>https://github.com/ravensorb/Xam-Plugins-VideoPlayer</projectUrl>
+    <iconUrl></iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This package contains a cross-platform video player for Xamarin applications.</description>
+    <summary>A cross platform video player for Xamarin based applications.</summary>
+    <releaseNotes>Initial Version</releaseNotes>
+    <copyright>Copyright © 2016</copyright>
+    <tags>Xamarin VideoPlayer Media</tags>
+    <dependencies>
+      <group>
+        <dependency id="Xamarin.Forms" version="2.2.0.31" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- Content Files -->
+    <file src="docs\Xam.Plugins.VideoPlayer.md " target="content" />
+    <!-- Assemblies: Portable -->
+    <file src="..\..\source\Xam.Plugin.VideoPlayer\bin\Debug\Xam.Plugin.VideoPlayer.dll" target="lib\portable-net45+win8+wpa81+wp8+monoandroid+xamarinios+monotouch+xamarinmac\Xam.Plugin.VideoPlayer.dll" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer\bin\Debug\Xam.Plugin.VideoPlayer.pdb" target="lib\portable-net45+win8+wpa81+wp8+monoandroid+xamarinios+monotouch+xamarinmac\Xam.Plugin.VideoPlayer.pdb" />
+    <!-- Assemblies: .NET Core 5.0 -->
+    <file src="..\..\source\Xam.Plugin.VideoPlayer\bin\Debug\Xam.Plugin.VideoPlayer.dll" target="lib\.NETCore50\Xam.Plugin.VideoPlayer.dll" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer\bin\Debug\Xam.Plugin.VideoPlayer.pdb" target="lib\.NETCore50\Xam.Plugin.VideoPlayer.pdb" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer.UWP\bin\Debug\Xam.Plugin.VideoPlayer.UWP.dll" target="lib\.NETCore50\Xam.Plugin.VideoPlayer.UWP.dll" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer.UWP\bin\Debug\Xam.Plugin.VideoPlayer.UWP.pdb" target="lib\.NETCore50\Xam.Plugin.VideoPlayer.UWP.pdb" />
+    <!-- Assemblies: Android -->
+    <file src="..\..\source\Xam.Plugin.VideoPlayer\bin\Debug\Xam.Plugin.VideoPlayer.dll" target="lib\monoandroid\Xam.Plugin.VideoPlayer.dll" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer\bin\Debug\Xam.Plugin.VideoPlayer.pdb" target="lib\monoandroid\Xam.Plugin.VideoPlayer.pdb" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer.Droid\bin\Debug\Xam.Plugin.VideoPlayer.Droid.dll" target="lib\monoandroid\Xam.Plugin.VideoPlayer.Droid.dll" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer.Droid\bin\Debug\Xam.Plugin.VideoPlayer.Droid.pdb" target="lib\monoandroid\Xam.Plugin.VideoPlayer.Droid.pdb" />
+    <!-- Assemblies: Windows 8.1 -->
+    <file src="..\..\source\Xam.Plugin.VideoPlayer\bin\Debug\Xam.Plugin.VideoPlayer.dll" target="lib\win81\Xam.Plugin.VideoPlayer.dll" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer\bin\Debug\Xam.Plugin.VideoPlayer.pdb" target="lib\win81\Xam.Plugin.VideoPlayer.pdb" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer.WinRT\bin\Debug\Xam.Plugin.VideoPlayer.WinRT.dll" target="lib\win81\Xam.Plugin.VideoPlayer.WinRT.dll" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer.WinRT\bin\Debug\Xam.Plugin.VideoPlayer.WinRT.pdb" target="lib\win81\Xam.Plugin.VideoPlayer.WinRT.pdb" />
+    <!-- Assemblies: Winows Mobile 8.1 -->
+    <file src="..\..\source\Xam.Plugin.VideoPlayer\bin\Debug\Xam.Plugin.VideoPlayer.dll" target="lib\wpa81\Xam.Plugin.VideoPlayer.dll" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer\bin\Debug\Xam.Plugin.VideoPlayer.pdb" target="lib\wpa81\Xam.Plugin.VideoPlayer.pdb" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer.WinRT.Phone\bin\Debug\Xam.Plugin.VideoPlayer.WinRT.Phone.dll" target="lib\wpa81\Xam.Plugin.VideoPlayer.WinRT.Phone.dll" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer.WinRT.Phone\bin\Debug\Xam.Plugin.VideoPlayer.WinRT.Phone.pdb" target="lib\wpa81\Xam.Plugin.VideoPlayer.WinRT.Phone.pdb" />
+    <!-- Assemblies: iOS -->
+    <file src="..\..\source\Xam.Plugin.VideoPlayer\bin\Debug\Xam.Plugin.VideoPlayer.dll" target="lib\xamarinios\Xam.Plugin.VideoPlayer.dll" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer\bin\Debug\Xam.Plugin.VideoPlayer.pdb" target="lib\xamarinios\Xam.Plugin.VideoPlayer.pdb" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer.iOS\bin\Debug\Xam.Plugin.VideoPlayer.iOS.pdb" target="lib\xamarinios\Xam.Plugin.VideoPlayer.iOS.pdb" />
+    <file src="..\..\source\Xam.Plugin.VideoPlayer.iOS\bin\Debug\Xam.Plugin.VideoPlayer.iOS.dll" target="lib\xamarinios\Xam.Plugin.VideoPlayer.iOS.dll" />
+  </files>
+</package>
