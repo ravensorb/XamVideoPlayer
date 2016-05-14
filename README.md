@@ -42,11 +42,11 @@ Here is a sample XAML Page
                                      VideoSource="{Binding PlaybackUrl}"
                                      WidthRequest="600" />
         <StackLayout Orientation="Horizontal">
-            <Button Command="{Binding Path=RewindCommand, Source={x:Reference video}, Converter={StaticResource intToTimeSpanConverter}, ConverterParameter=-5}" Text="Rewind" />
+            <Button Command="{Binding Path=SeekCommand, Source={x:Reference video}, Converter={StaticResource intToTimeSpanConverter}, ConverterParameter=-5}" Text="Rewind" />
             <Button Command="{Binding Path=PlayCommand, Source={x:Reference video}}" Text="Play" />
             <Button Command="{Binding Path=PauseCommand, Source={x:Reference video}}" Text="Pause" />
             <Button Command="{Binding Path=StopCommand, Source={x:Reference video}}" Text="Stop" />
-            <Button Command="{Binding Path=FastForwardCommand, Source={x:Reference video}, Converter={StaticResource intToTimeSpanConverter}, ConverterParameter=5}" Text="FastForward" />
+            <Button Command="{Binding Path=SeekCommand, Source={x:Reference video}, Converter={StaticResource intToTimeSpanConverter}, ConverterParameter=5}" Text="FastForward" />
         </StackLayout>
         <StackLayout Orientation="Vertical">
             <Label Text="{Binding Position, StringFormat='Position {0}'}" />
