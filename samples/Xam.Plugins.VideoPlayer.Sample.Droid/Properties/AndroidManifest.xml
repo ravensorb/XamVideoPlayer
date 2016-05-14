@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" package="Xam.Plugins.VideoPlayer.Sample.Droid">
 	<uses-sdk />
 	<uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
 	<uses-permission android:name="android.permission.INTERNET" />
-	<application android:label="$safeprojectname$"></application>
+	<application android:label="Xam.Plugins.VideoPlayer.Sample.Droid"></application>
 </manifest>
