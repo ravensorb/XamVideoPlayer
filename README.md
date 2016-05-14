@@ -1,6 +1,8 @@
 # XamVideoPlayer
 Xamarin Cross Platform Video Player
 
+[![Build status](https://ci.appveyor.com/api/projects/status/afrsbak8rflndj6b?svg=true)](https://ci.appveyor.com/project/ravensorb/xamvideoplayer)
+
 This library provides a fully implemented cross platform video player for Windows, iOS, and Android.  Please check out the samples to see how to use it.
 
 Note: Remeber to take care of ATS for iOS Applications
