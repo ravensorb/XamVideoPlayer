@@ -30,6 +30,27 @@ namespace Xam.Plugins.VideoPlayer
 		{
 		}
 
+		/// <summary>
+		/// Reload the view and hit up the MediaElement.
+		/// </summary>
+		/// <param name="e"></param>
+		protected override void OnElementChanged(ElementChangedEventArgs<VideoPlayerView> e)
+		{
+			base.OnElementChanged(e);
+
+			var videoPlayerView = e.NewElement;
+
+			if (e.OldElement != null)
+			{
+				//var oldVideoPlayerVideo = e.OldElement as VideoPlayerView;
+			}
+
+			if ((videoPlayerView != null) && (e.OldElement == null))
+			{
+				UpdateOrCreateMediaElement(videoPlayerView, !string.IsNullOrEmpty(videoPlayerView.VideoSource));
+			}
+		}
+
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			var videoPlayerView = sender as VideoPlayerView;
@@ -44,34 +65,11 @@ namespace Xam.Plugins.VideoPlayer
 			base.OnElementPropertyChanged(sender, e);
 		}
 
-		/// <summary>
-		/// Reload the view and hit up the MediaElement.
-		/// </summary>
-		/// <param name="e"></param>
-		protected override void OnElementChanged(ElementChangedEventArgs<VideoPlayerView> e)
-		{
-
-			base.OnElementChanged(e);
-
-			var videoPlayerView = e.NewElement;
-
-			if (e.OldElement != null)
-			{
-				//var oldVideoPlayerVideo = e.OldElement as VideoPlayerView;
-			}
-
-			if ((videoPlayerView != null) && (e.OldElement == null))
-			{
-				UpdateOrCreateMediaElement(videoPlayerView, !string.IsNullOrEmpty(videoPlayerView.VideoSource));
-			}
-
-		}
-
 		private void UpdateOrCreateMediaElement(VideoPlayerView videoPlayerView, bool updateSource = false)
 		{
 			if (_playerController == null)
 			{
-				_playerController = new AVPlayerViewController {View = {Frame = Frame}};
+				_playerController = new AVPlayerViewController {View = {Frame = Frame}, ShowsPlaybackControls = Element.AreControlsDisplayed };
 
 				UpdatePlayerUrl(videoPlayerView.VideoSource);
 
@@ -125,6 +123,10 @@ namespace Xam.Plugins.VideoPlayer
 			{
 				UpdatePlayerUrl(videoPlayerView.VideoSource);
 			}
+
+			_playerController.ShowsPlaybackControls = videoPlayerView.AreControlsDisplayed;
+			_playerController.Player.Volume = (float) videoPlayerView.VolumeLevel;
+			if (videoPlayerView.IsMuted) _playerController.Player.Volume = 0;
 		}
 
 		private void UpdatePlayerUrl(string url)

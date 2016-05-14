@@ -26,6 +26,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuspec", ".nuspec", "{19C5
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docs", ".docs", "{60B78BC1-82A2-4403-8C65-CD9E795A0E88}"
+	ProjectSection(SolutionItems) = preProject
+		..\docs\Xam.Plugins.VideoPlayer.md = ..\docs\Xam.Plugins.VideoPlayer.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{6C2EEECF-3B24-4543-9E50-FAFF112BBFE1}"
 EndProject
@@ -557,6 +560,8 @@ Global
 		{3FB0473F-8045-446E-9CB5-7B104A899D45}.Debug|ARM.Deploy.0 = Debug|ARM
 		{3FB0473F-8045-446E-9CB5-7B104A899D45}.Debug|iPhone.ActiveCfg = Debug|x86
 		{3FB0473F-8045-446E-9CB5-7B104A899D45}.Debug|iPhoneSimulator.ActiveCfg = Debug|x86
+		{3FB0473F-8045-446E-9CB5-7B104A899D45}.Debug|iPhoneSimulator.Build.0 = Debug|x86
+		{3FB0473F-8045-446E-9CB5-7B104A899D45}.Debug|iPhoneSimulator.Deploy.0 = Debug|x86
 		{3FB0473F-8045-446E-9CB5-7B104A899D45}.Debug|x64.ActiveCfg = Debug|x64
 		{3FB0473F-8045-446E-9CB5-7B104A899D45}.Debug|x64.Build.0 = Debug|x64
 		{3FB0473F-8045-446E-9CB5-7B104A899D45}.Debug|x64.Deploy.0 = Debug|x64

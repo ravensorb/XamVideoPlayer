@@ -28,115 +28,139 @@ namespace Xam.Plugins.VideoPlayer
 		#endregion Commands
 
 		#region Properties
-		#region Video Source
-		/// <summary>
-		/// The url source of the video.
-		/// </summary>
+		#region Property: VideoSource
 		public static readonly BindableProperty VideoSourceProperty =
-			BindableProperty.Create(nameof(VideoSource), typeof(string), typeof(VideoPlayerView),
-																	"",
-																	BindingMode.Default
+			BindableProperty.Create(propertyName: nameof(VideoSource),
+									returnType: typeof(string),
+									declaringType: typeof(VideoPlayerView),
+									defaultValue: default(string),
+									defaultBindingMode: BindingMode.Default
 #if DEBUG
-																	, (bindable, value) =>
-																	{
-																		// validate the new value
-																		System.Diagnostics.Debug.WriteLine("VideoPlayer: VideoSource [Value: {0}]", value);
+									, validateValue: (bindable, value) =>
+									{
+										// validate the new value
+										System.Diagnostics.Debug.WriteLine("VideoPlayerView: VideoSource [Value: {0}]", value);
 
-																		return true;
-																	},
-																	(bindable, oldvalue, newvalue) =>
-																	{
-																		//property changed
-																		System.Diagnostics.Debug.WriteLine("VideoPlayer: VideoSource [OldValue: {0}] [NewValue: {1}]", oldvalue, newvalue);
-																	},
-																	(bindable, oldvalue, newvalue) =>
-																	{
-																		//property changing
-																		System.Diagnostics.Debug.WriteLine("VideoPlayer: VideoSource [OldValue: {0}] [NewValue: {1}]", oldvalue, newvalue);
-																	},
-																	(bindable, value) =>
-																	{
-																		//coerce value
-																		System.Diagnostics.Debug.WriteLine("VideoPlayer: VideoSource [Value: {0}]", value);
-																		return value;
-																	},
-																	(bindable) =>
-																	{
-																		//default constructor
-																		return "";
-																	}
+										return true;
+									}
+									, propertyChanged: (bindable, oldvalue, newvalue) =>
+									{
+										//property changed
+										System.Diagnostics.Debug.WriteLine("VideoPlayerView: VideoSource [OldValue: {0}] [NewValue: {1}]", oldvalue, newvalue);
+									}
+									, propertyChanging: (bindable, oldvalue, newvalue) =>
+									{
+										//property changing
+										System.Diagnostics.Debug.WriteLine("VideoPlayerView: VideoSource [OldValue: {0}] [NewValue: {1}]", oldvalue, newvalue);
+									}
+									, coerceValue: (bindable, value) =>
+									{
+										//coerce value
+										System.Diagnostics.Debug.WriteLine("VideoPlayerView: VideoSource [Value: {0}]", value);
+										return value;
+									}
+									, defaultValueCreator: (bindable) =>
+									{
+										//default constructor
+										return default(string);
+									}
 #endif
-																	);
+				);
 
-		/// <summary>
-		/// The url source of the video.
-		/// </summary>
-		public string VideoSource { get { return (string)GetValue(VideoSourceProperty); } set { SetValue(VideoSourceProperty, value); } }
-		#endregion Video Source
+		public string VideoSource
+		{
+			get { return (string)GetValue(VideoSourceProperty); }
+			set { SetValue(VideoSourceProperty, value); }
+		}
+		#endregion Property: VideoSource
 
-		#region Auto Play
+		#region Property: VolumeLevel
+		public static readonly BindableProperty VolumeLevelProperty =
+			BindableProperty.Create(propertyName: nameof(VolumeLevel), returnType: typeof(double),
+				declaringType: typeof(VideoPlayerView), defaultValue: default(double), defaultBindingMode: BindingMode.Default);
+
+		public double VolumeLevel
+		{
+			get { return (double)GetValue(VolumeLevelProperty); }
+			set { SetValue(VolumeLevelProperty, value); }
+		}
+		#endregion Property: VolumeLevel
+
+		#region Property: AutoPlay
 		public static readonly BindableProperty AutoPlayProperty =
-			//BindableProperty.Create<VideoPlayer, bool>(p => p.AutoPlay, true);
-			BindableProperty.Create(nameof(AutoPlay), typeof(bool), typeof(VideoPlayerView),
-																	false,
-																	BindingMode.Default);
+			BindableProperty.Create(propertyName: nameof(AutoPlay), returnType: typeof(bool),
+				declaringType: typeof(VideoPlayerView), defaultValue: default(bool), defaultBindingMode: BindingMode.Default);
 
-		public bool AutoPlay { get { return (bool)GetValue(AutoPlayProperty); } set { SetValue(AutoPlayProperty, value); } }
-		#endregion Auto Play
+		public bool AutoPlay
+		{
+			get { return (bool)GetValue(AutoPlayProperty); }
+			set { SetValue(AutoPlayProperty, value); }
+		}
+		#endregion Property: AutoPlay
 
-		#region Is Muted
-		public static readonly BindableProperty MutedProperty =
-			BindableProperty.Create(nameof(IsMuted), typeof(bool), typeof(VideoPlayerView),
-																	true,
-																	BindingMode.Default,
-																	propertyChanged: (bindable, value, newValue) =>
-																	{
-																		var view = bindable as VideoPlayerView;
-																		if (view != null) view.IsMuted = (bool) newValue;
-																	});
+		#region Property: AreControlsDisplayed
+		public static readonly BindableProperty AreControlsDisplayedProperty =
+			BindableProperty.Create(propertyName: nameof(AreControlsDisplayed), returnType: typeof(bool),
+				declaringType: typeof(VideoPlayerView), defaultValue: default(bool), defaultBindingMode: BindingMode.Default);
 
-		public bool IsMuted { get { return (bool)GetValue(MutedProperty); } set { SetValue(MutedProperty, value); } }
-		#endregion Is Muted
+		public bool AreControlsDisplayed
+		{
+			get { return (bool)GetValue(AreControlsDisplayedProperty); }
+			set { SetValue(AreControlsDisplayedProperty, value); }
+		}
+		#endregion Property: AreControlsDisplayed
 
-		#region Media State
+		#region Property: IsMuted
+		public static readonly BindableProperty IsMutedProperty =
+			BindableProperty.Create(propertyName: nameof(IsMuted), returnType: typeof(bool),
+				declaringType: typeof(VideoPlayerView), defaultValue: default(bool), defaultBindingMode: BindingMode.Default);
+
+		public bool IsMuted
+		{
+			get { return (bool)GetValue(IsMutedProperty); }
+			set { SetValue(IsMutedProperty, value); }
+		}
+		#endregion Property: IsMuted
+
+		#region Property: MediaState
 		public static readonly BindableProperty MediaStateProperty =
-			BindableProperty.Create(nameof(MediaState), typeof(MediaState), typeof(VideoPlayerView),
-																	MediaState.Unknown,
-																	BindingMode.TwoWay);
+			BindableProperty.Create(propertyName: nameof(MediaState), returnType: typeof(MediaState),
+				declaringType: typeof(VideoPlayerView), defaultValue: default(MediaState), defaultBindingMode: BindingMode.Default);
 
-		public MediaState MediaState { get { return (MediaState)GetValue(MediaStateProperty); } set { SetValue(MediaStateProperty, value); } }
-		#endregion Media State
+		public MediaState MediaState
+		{
+			get { return (MediaState)GetValue(MediaStateProperty); }
+			set { SetValue(MediaStateProperty, value); }
+		}
+		#endregion Property: MediaState
 
-		#region Video Scale
+		#region Property: VideoScale
 		/// <summary>
 		/// The scale format of the video which is in most cases 16:9 (1.77) or 4:3 (1.33).
 		/// </summary>
 		public static readonly BindableProperty VideoScaleProperty =
-			//BindableProperty.Create<VideoPlayer, double>(p => p.VideoScale, 1.77);
-			BindableProperty.Create(nameof(VideoScale), typeof(double), typeof(VideoPlayerView),
-																	1.77,
-																	BindingMode.Default);
+			BindableProperty.Create(propertyName: nameof(VideoScale), returnType: typeof(double),
+				declaringType: typeof(VideoPlayerView), defaultValue: 1.77d, defaultBindingMode: BindingMode.Default);
 
-		/// <summary>
-		/// The scale format of the video which is in most cases 16:9 (1.77) or 4:3 (1.33).
-		/// </summary>
-		public double VideoScale { get { return (double)GetValue(VideoScaleProperty); } set	{ SetValue(VideoScaleProperty, value); } }
-		#endregion Video Scale
+		public double VideoScale
+		{
+			get { return (double)GetValue(VideoScaleProperty); }
+			set { SetValue(VideoScaleProperty, value); }
+		}
+		#endregion Property: VideoScale
 
-		#region Position
-		/// <summary>
-		/// The position of the player for the current media file
-		/// </summary>
+		#region Property: Position
 		public static readonly BindableProperty PositionProperty =
-			BindableProperty.Create(nameof(Position), typeof(TimeSpan), typeof(VideoPlayerView),
-																	new TimeSpan(),
-																	BindingMode.TwoWay);
+			BindableProperty.Create(propertyName: nameof(Position), returnType: typeof(TimeSpan),
+				declaringType: typeof(VideoPlayerView), defaultValue: new TimeSpan(), defaultBindingMode: BindingMode.Default);
 
-		/// <summary>
-		/// The position of the player for the current media file
-		/// </summary>
-		public TimeSpan Position { get { return (TimeSpan)GetValue(PositionProperty); } set { SetValue(PositionProperty, value); Seek(value); } }
-		#endregion Position
+		public TimeSpan Position
+		{
+			get { return (TimeSpan)GetValue(PositionProperty); }
+			set { SetValue(PositionProperty, value); Seek(value); }
+		}
+		#endregion Property: Position
+
 		#endregion Properties
 
 		#region Events Handlers
