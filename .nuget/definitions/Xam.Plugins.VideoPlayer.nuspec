@@ -14,7 +14,7 @@
 	<summary>A cross platform video player for Xamarin based applications.</summary>
 	<releaseNotes>Initial Version</releaseNotes>
 	<copyright>Copyright © 2016</copyright>
-	<tags>Xamarin VideoPlayer Media</tags>
+	<tags>Xamarin VideoPlayer Media Video</tags>
 	<dependencies>
 	  <group>
 		<dependency id="Xamarin.Forms" version="2.2.0.31" />
