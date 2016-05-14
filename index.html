@@ -33,6 +33,16 @@
 
 <p>Xamarin Cross Platform Video Player</p>
 
+<p><a href="https://ci.appveyor.com/project/ravensorb/xamvideoplayer"><img src="https://ci.appveyor.com/api/projects/status/afrsbak8rflndj6b?svg=true" alt="Build status"></a></p>
+
+<p><a href="https://www.nuget.org/packages/Xam.Plugins.VideoPlayer">Get the package from nuget</a></p>
+
+<pre><code>Install-Package Xam.Plugins.VideoPlayer -Pre 
+</code></pre>
+
+<h2>
+<a id="about" class="anchor" href="#about" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>About</h2>
+
 <p>This library provides a fully implemented cross platform video player for Windows, iOS, and Android.  Please check out the samples to see how to use it.</p>
 
 <p>Note: Remeber to take care of ATS for iOS Applications</p>
@@ -62,11 +72,11 @@
                                      VideoSource="{Binding PlaybackUrl}"
                                      WidthRequest="600" /&gt;
         &lt;StackLayout Orientation="Horizontal"&gt;
-            &lt;Button Command="{Binding Path=RewindCommand, Source={x:Reference video}, Converter={StaticResource intToTimeSpanConverter}, ConverterParameter=-5}" Text="Rewind" /&gt;
+            &lt;Button Command="{Binding Path=SeekCommand, Source={x:Reference video}, Converter={StaticResource intToTimeSpanConverter}, ConverterParameter=-5}" Text="Rewind" /&gt;
             &lt;Button Command="{Binding Path=PlayCommand, Source={x:Reference video}}" Text="Play" /&gt;
             &lt;Button Command="{Binding Path=PauseCommand, Source={x:Reference video}}" Text="Pause" /&gt;
             &lt;Button Command="{Binding Path=StopCommand, Source={x:Reference video}}" Text="Stop" /&gt;
-            &lt;Button Command="{Binding Path=FastForwardCommand, Source={x:Reference video}, Converter={StaticResource intToTimeSpanConverter}, ConverterParameter=5}" Text="FastForward" /&gt;
+            &lt;Button Command="{Binding Path=SeekCommand, Source={x:Reference video}, Converter={StaticResource intToTimeSpanConverter}, ConverterParameter=5}" Text="FastForward" /&gt;
         &lt;/StackLayout&gt;
         &lt;StackLayout Orientation="Vertical"&gt;
             &lt;Label Text="{Binding Position, StringFormat='Position {0}'}" /&gt;
