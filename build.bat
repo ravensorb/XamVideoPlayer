@@ -8,8 +8,8 @@ SET PRERELEASE=%4
 
 IF [%1] == [] SET TASK=BUILD
 IF [%2] == [] SET CONFIG=Debug
-IF [%3] == [] SET VERSION=2.2.0
-IF [%4] == [] SET PRERELEASE=pre01
+IF [%3] == [] SET VERSION=1.0.0
+IF [%4] == [] SET PRERELEASE=pre03
 
 IF [%1] == [help] GOTO DisplayHelp
 if [%3] == [] GOTO BuildWithOutVersion
@@ -42,8 +42,8 @@ echo   4 - Prerelease (optional): A prerelease num (ex: pre01)
 echo.
 echo Examples:
 echo     .\build.bat Clean
-echo     .\build.bat Build Release
-echo     .\build.bat Build Release 2.2.1 pre01
+echo     .\build.bat Build %CONFIG%
+echo     .\build.bat Build %CONFIG% %VERSION% %PRERELEASE%
 echo.
 GOTO Done
 

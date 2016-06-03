@@ -15,7 +15,7 @@ using Xamarin.Forms.Platform.WinRT;
 using Xamarin.Forms.Platform.WinPhone;
 #endif
 
-[assembly: ExportRenderer(typeof(VideoPlayerView),
+[assembly: ExportRenderer(typeof(VideoPlayer),
 						  typeof(VideoPlayerViewRenderer))]
 
 namespace Xam.Plugins.VideoPlayer
@@ -23,7 +23,7 @@ namespace Xam.Plugins.VideoPlayer
 	/// <summary>
 	/// VideoPlayer Renderer for Windows Phone Silverlight.
 	/// </summary>
-	public class VideoPlayerViewRenderer : ViewRenderer<VideoPlayerView, MediaElement>
+	public class VideoPlayerViewRenderer : ViewRenderer<VideoPlayer, MediaElement>
 	{
 		MediaElement _mediaElement;
 
@@ -38,7 +38,7 @@ namespace Xam.Plugins.VideoPlayer
 		/// Reload the view and hit up the MediaElement.
 		/// </summary>
 		/// <param name="e"></param>
-		protected override void OnElementChanged(ElementChangedEventArgs<VideoPlayerView> e)
+		protected override void OnElementChanged(ElementChangedEventArgs<VideoPlayer> e)
 		{
 			base.OnElementChanged(e);
 
@@ -46,7 +46,7 @@ namespace Xam.Plugins.VideoPlayer
 
 			if (e.OldElement != null)
 			{
-				//var oldVideoPlayerVideo = e.OldElement as VideoPlayerView;
+				//var oldVideoPlayerVideo = e.OldElement as VideoPlayer;
 			}
 
 			if ((videoPlayerView != null) && (e.OldElement == null))
@@ -57,7 +57,7 @@ namespace Xam.Plugins.VideoPlayer
 
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			var videoPlayerView = sender as VideoPlayerView;
+			var videoPlayerView = sender as VideoPlayer;
 
 			if (videoPlayerView != null)
 			{
@@ -70,52 +70,58 @@ namespace Xam.Plugins.VideoPlayer
 			base.OnElementPropertyChanged(sender, e);
 		}
 
-		private void UpdateOrCreateMediaElement(VideoPlayerView videoPlayerView, bool updateSource = false)
+		private void UpdateOrCreateMediaElement(VideoPlayer videoPlayer, bool updateSource = false)
 		{
-			if (_mediaElement == null && !string.IsNullOrEmpty(videoPlayerView.VideoSource))
+			if (_mediaElement == null && !string.IsNullOrEmpty(videoPlayer.VideoSource))
 			{
 				_mediaElement = new MediaElement();
-
+					
 				// Hook up event handlers
 				//mediaElement.BufferingProgressChanged += (o, e1) => { };
 				//mediaElement.CurrentStateChanged += (o, e1) => { };
 				//mediaElement.DownloadProgressChanged += (o, e1) => { };
 				//mediaElement.MarkerReached += (o, e1) => { };
-				_mediaElement.MediaFailed += (o, e1) => { videoPlayerView.OnMediaErrorOccurred(e1.ErrorMessage); };
-				_mediaElement.MediaEnded += (o, e1) => { videoPlayerView.OnMediaCompleted(); };
-				_mediaElement.MediaOpened += (o, e1) => { videoPlayerView.OnMediaLoaded(); };
+				_mediaElement.MediaFailed += (o, e1) => { videoPlayer.OnMediaErrorOccurred(e1.ErrorMessage); };
+				_mediaElement.MediaEnded += (o, e1) => { videoPlayer.OnMediaCompleted(); };
+				_mediaElement.MediaOpened += (o, e1) => { videoPlayer.OnMediaLoaded(); };
 				//mediaElement.RateChanged += (o, e1) => { };
-				//_mediaElement.SeekCompleted += (o, e1) => { videoPlayerView.OnSeekCompleted(_mediaElement.Position); };
+				//_mediaElement.SeekCompleted += (o, e1) => { VideoPlayer.OnSeekCompleted(_mediaElement.Position); };
 				//mediaElement.VolumeChanged += (o, e1) => { };
 
 				// Hook up commands
-				videoPlayerView.PlayCommand = new Command(() =>
+				videoPlayer.PlayCommand = new Command(() =>
 				{
 					System.Diagnostics.Debug.WriteLine("VideoPlayer: Play");
 
 					_mediaElement.Play();
+					Element.MediaState = MediaState.Playing;
 				}, () => _mediaElement.Source != null);
-				videoPlayerView.PauseCommand = new Command(() =>
+				videoPlayer.PauseCommand = new Command(() =>
 				{
 					System.Diagnostics.Debug.WriteLine("VideoPlayer: Pause");
 
 					_mediaElement.Pause();
+					Element.MediaState = MediaState.Paused;
 				}, () => _mediaElement.CanPause);
-				videoPlayerView.SeekCommand = new Command<TimeSpan>((timeSpan) => {
+				videoPlayer.SeekCommand = new Command<TimeSpan>((timeSpan) => {
 					System.Diagnostics.Debug.WriteLine("VideoPlayer: Seek");
 
+					var ms = Element.MediaState;
+					Element.MediaState = MediaState.Seeking;
 					_mediaElement.Position = timeSpan;
+					Element.MediaState = ms;
 				}, (timeSpan) =>
 				{
 					return _mediaElement.CanSeek && timeSpan.TotalSeconds < _mediaElement.NaturalDuration.TimeSpan.TotalSeconds;
 				});
-				videoPlayerView.StopCommand = new Command(() =>
+				videoPlayer.StopCommand = new Command(() =>
 				{
 					System.Diagnostics.Debug.WriteLine("VideoPlayer: Stop");
 
 					_mediaElement.Stop();
+					Element.MediaState = MediaState.Stopped;
 				}, () => _mediaElement.CurrentState == MediaElementState.Playing || _mediaElement.CurrentState == MediaElementState.Paused);
-				videoPlayerView.MuteCommand = new Command<bool>((muted) =>
+				videoPlayer.MuteCommand = new Command<bool>((muted) =>
 				{
 					System.Diagnostics.Debug.WriteLine("VideoPlayer: Mute");
 
@@ -125,25 +131,31 @@ namespace Xam.Plugins.VideoPlayer
 				SetNativeControl(_mediaElement);
 			}
 
-			//mediaElement.Height = mediaElement.Width / videoPlayerView.VideoScale;
+			//mediaElement.Height = mediaElement.Width / VideoPlayer.VideoScale;
 
 			if (updateSource)
 			{
-				UpdatePlayerUrl(videoPlayerView.VideoSource);
+				UpdatePlayerUrl(videoPlayer.VideoSource);
 			}
 
 			if (_mediaElement != null)
 			{
-				_mediaElement.AutoPlay = videoPlayerView.AutoPlay;
-				_mediaElement.AreTransportControlsEnabled = videoPlayerView.AreControlsDisplayed;
-				_mediaElement.Volume = videoPlayerView.VolumeLevel;
-				_mediaElement.Width = videoPlayerView.Width > 0 ? videoPlayerView.Width : 480;
+				_mediaElement.AutoPlay = videoPlayer.AutoPlay;
+				_mediaElement.AreTransportControlsEnabled = videoPlayer.AreControlsDisplayed;
+				_mediaElement.Volume = videoPlayer.VolumeLevel;
+				_mediaElement.Width = videoPlayer.Width > 0 ? videoPlayer.Width : 480;
 				// TODO: figure a better way to set the right Width of the current view
-				_mediaElement.Height = (videoPlayerView.Height > 0 ? videoPlayerView.Height : (480 / videoPlayerView.VideoScale));
+				_mediaElement.Height = (videoPlayer.Height > 0 ? videoPlayer.Height : (480 / videoPlayer.VideoScale));
 
-				videoPlayerView.WidthRequest = _mediaElement.Width;
-				videoPlayerView.HeightRequest = _mediaElement.Height;
+				videoPlayer.WidthRequest = _mediaElement.Width;
+				videoPlayer.HeightRequest = _mediaElement.Height;
 			}
+
+			if (Element.AutoPlay)
+			{
+				Element.PlayCommand.Execute(null);
+			}
+
 		}
 
 		private void UpdatePlayerUrl(string url)

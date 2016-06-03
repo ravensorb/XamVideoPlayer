@@ -9,7 +9,8 @@
 		</ResourceDictionary>
 	</ContentPage.Resources>
 	<StackLayout Orientation="Vertical">
-		<videoPlayer:VideoPlayerView x:Name="video"
+		<videoPlayer:VideoPlayer x:Name="video"
+									 AreControlsDisplayed="True"
 									 BindingContext="{Binding SelectedVideo}"
 									 HeightRequest="300"
 									 VideoSource="{Binding PlaybackUrl}"
@@ -39,5 +40,11 @@
 				</DataTemplate>
 			</ListView.ItemTemplate>
 		</ListView>
+		<ScrollView>
+			<StackLayout BackgroundColor="Silver" MinimumHeightRequest="100">
+				<Label Text="{Binding Path=MediaState, Source={x:Reference video}, StringFormat='Media State: {0}'}" />
+				<Label Text="{Binding Path=ErrorMessage, Source={x:Reference video}}" />
+			</StackLayout>
+		</ScrollView>
 	</StackLayout>
 </ContentPage>

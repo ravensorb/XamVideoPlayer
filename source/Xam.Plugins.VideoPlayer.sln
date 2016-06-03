@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuspec", ".nuspec", "{19C5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docs", ".docs", "{60B78BC1-82A2-4403-8C65-CD9E795A0E88}"
 	ProjectSection(SolutionItems) = preProject
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
 		..\docs\Xam.Plugins.VideoPlayer.md = ..\docs\Xam.Plugins.VideoPlayer.md
 	EndProjectSection
 EndProject
@@ -49,6 +51,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xam.Plugins.VideoPlayer.Sample.iOS", "..\samples\Xam.Plugins.VideoPlayer.Sample.iOS\Xam.Plugins.VideoPlayer.Sample.iOS.csproj", "{54AD40D1-D3C5-4F3E-AB21-C37A345EF579}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Xam.Plugins.VideoPlayer.WinRT.Shared", "Xam.Plugins.VideoPlayer.WinRT.Shared\Xam.Plugins.VideoPlayer.WinRT.Shared.shproj", "{2B7F63AF-7EC7-4305-8686-BED2AC1B84EF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".misc", ".misc", "{F6684CBC-3CFE-48C3-AE95-B3BFC6185A3E}"
+	ProjectSection(SolutionItems) = preProject
+		AssemblyInfo.Shared.cs = AssemblyInfo.Shared.cs
+		..\version.json = ..\version.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

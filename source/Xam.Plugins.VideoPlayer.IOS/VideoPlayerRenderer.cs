@@ -1,40 +1,59 @@
-﻿using System;
-using System.ComponentModel;
+﻿// ***********************************************************************
+// Assembly         : Xam.Plugins.VideoPlayer.IOS
+// Author           : raven
+// Created          : 05-12-2016
+//
+// Last Modified By : raven
+// Last Modified On : 05-14-2016
+// ***********************************************************************
+// <copyright file="VideoPlayerRenderer.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
 using AVFoundation;
 using AVKit;
 using CoreMedia;
-using PropertyChanged;
+using System;
+using System.ComponentModel;
 using UIKit;
-using Xam.Plugins.VideoPlayer;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 
-[assembly: ExportRenderer(typeof(VideoPlayerView), typeof(VideoPlayerRenderer))]
+[assembly: ExportRenderer(typeof(Xam.Plugins.VideoPlayer.VideoPlayer), typeof(Xam.Plugins.VideoPlayer.iOS.VideoPlayerRenderer))]
 
-namespace Xam.Plugins.VideoPlayer
+namespace Xam.Plugins.VideoPlayer.iOS
 {
 	/// <summary>
 	/// VideoPlayer Renderer for iOS (Not implemented!).
 	/// </summary>
-	public class VideoPlayerRenderer : ViewRenderer<VideoPlayerView, UIView>
+	public class VideoPlayerRenderer : ViewRenderer<VideoPlayer, UIView>
 	{
-		//globally declare variables
+		#region Fields
 		AVPlayerViewController _playerController;
-		AVPlayerItem _playerItem;
 		AVPlayer _player;
+		#endregion Fields
 
+		#region Properties
+
+		private AVPlayer SafePlayer => _playerController?.Player;
+
+		#endregion Properties
+
+		#region Methods: Overrides
 		/// <summary>
 		/// Used for registration with dependency service
 		/// </summary>
 		public new static void Init()
 		{
+			System.Diagnostics.Debug.WriteLine("VideoPlayerRenderer for iOS Init Called");
 		}
 
 		/// <summary>
 		/// Reload the view and hit up the MediaElement.
 		/// </summary>
-		/// <param name="e"></param>
-		protected override void OnElementChanged(ElementChangedEventArgs<VideoPlayerView> e)
+		/// <param name="e">The e.</param>
+		protected override void OnElementChanged(ElementChangedEventArgs<VideoPlayer> e)
 		{
 			base.OnElementChanged(e);
 
@@ -42,7 +61,7 @@ namespace Xam.Plugins.VideoPlayer
 
 			if (e.OldElement != null)
 			{
-				//var oldVideoPlayerVideo = e.OldElement as VideoPlayerView;
+				//var oldVideoPlayerVideo = e.OldElement as VideoPlayer;
 			}
 
 			if ((videoPlayerView != null) && (e.OldElement == null))
@@ -51,9 +70,14 @@ namespace Xam.Plugins.VideoPlayer
 			}
 		}
 
+		/// <summary>
+		/// Handles the <see cref="E:ElementPropertyChanged" /> event.
+		/// </summary>
+		/// <param name="sender">The sender.</param>
+		/// <param name="e">The <see cref="PropertyChangedEventArgs"/> instance containing the event data.</param>
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			var videoPlayerView = sender as VideoPlayerView;
+			var videoPlayerView = sender as VideoPlayer;
 
 			if (videoPlayerView != null)
 			{
@@ -65,140 +89,170 @@ namespace Xam.Plugins.VideoPlayer
 			base.OnElementPropertyChanged(sender, e);
 		}
 
-		private void UpdateOrCreateMediaElement(VideoPlayerView videoPlayerView, bool updateSource = false)
-		{
-			if (_playerController == null)
-			{
-				_playerController = new AVPlayerViewController {View = {Frame = Frame}, ShowsPlaybackControls = Element.AreControlsDisplayed };
-
-				UpdatePlayerUrl(videoPlayerView.VideoSource);
-
-				SetNativeControl(_playerController.View);
-
-				// Hook up commands
-				Element.PlayCommand = new Command(() =>
-				{
-					System.Diagnostics.Debug.WriteLine("VideoPlayer: Play");
-
-					_player?.Play();
-
-				}, () =>
-				{
-					return _player?.Status == AVPlayerStatus.ReadyToPlay;
-				});
-				Element.PauseCommand = new Command(() =>
-				{
-					System.Diagnostics.Debug.WriteLine("VideoPlayer: Pause");
-
-					_player?.Pause();
-				}, () =>
-				{
-					return _player?.Status == AVPlayerStatus.ReadyToPlay;
-				});
-
-				Element.SeekCommand = new Command<TimeSpan>((timeSpan) =>
-				{
-					System.Diagnostics.Debug.WriteLine("VideoPlayer: Seek");
-
-					var dt = new CMTime();
-					dt.Value = (long)timeSpan.TotalSeconds;
-					_player.Seek(dt);
-				}, (timeSpan) =>
-				{
-					return (_player?.Status == AVPlayerStatus.ReadyToPlay) && (timeSpan.TotalMilliseconds < _player?.CurrentTime.Value);
-				});
-				Element.StopCommand = new Command(() =>
-				{
-					System.Diagnostics.Debug.WriteLine("VideoPlayer: Stop");
-
-					_player?.Pause();
-				}, () =>
-				{
-					return _player?.Status == AVPlayerStatus.ReadyToPlay;
-				});
-				Element.MuteCommand = new Command<bool>((muted) => { _player.Muted = muted; }, (muted) => _player.Muted);
-			}
-
-			if (updateSource)
-			{
-				UpdatePlayerUrl(videoPlayerView.VideoSource);
-			}
-
-			_playerController.ShowsPlaybackControls = videoPlayerView.AreControlsDisplayed;
-			_playerController.Player.Volume = (float) videoPlayerView.VolumeLevel;
-			if (videoPlayerView.IsMuted) _playerController.Player.Volume = 0;
-		}
-
-		private void UpdatePlayerUrl(string url)
-		{
-			if (string.IsNullOrEmpty(url) || _playerController == null) return;
-
-			_playerItem?.Dispose();
-			_player?.Dispose();
-
-			_playerItem = AVPlayerItem.FromUrl(new Foundation.NSUrl(url));
-			_playerItem = new AVPlayerItem(new Foundation.NSUrl(url));
-			if (_playerItem.Error != null)
-			{
-				System.Diagnostics.Debug.WriteLine(_playerItem.Error.LocalizedDescription);
-			}
-
-			//_player = AVPlayer.FromUrl(new Foundation.NSUrl(url));
-			_player = new AVPlayer(_playerItem);
-			if (_player.Error != null)
-			{
-				System.Diagnostics.Debug.WriteLine(_player.Error.LocalizedDescription);
-			}
-
-			_player.ActionAtItemEnd = AVPlayerActionAtItemEnd.None;
-
-			_playerItem.AddObserver(this, (Foundation.NSString)"status", Foundation.NSKeyValueObservingOptions.Initial | Foundation.NSKeyValueObservingOptions.New, IntPtr.Zero);
-			_playerItem.AddObserver(this, (Foundation.NSString)"error", Foundation.NSKeyValueObservingOptions.Initial | Foundation.NSKeyValueObservingOptions.New, IntPtr.Zero);
-			_player.AddObserver(this, (Foundation.NSString)"status", Foundation.NSKeyValueObservingOptions.Initial | Foundation.NSKeyValueObservingOptions.New, IntPtr.Zero);
-			_player.AddObserver(this, (Foundation.NSString)"error", Foundation.NSKeyValueObservingOptions.Initial | Foundation.NSKeyValueObservingOptions.New, IntPtr.Zero);
-
-			_playerController.Player = _player;
-			if (_playerController.Player?.Error != null)
-			{
-				System.Diagnostics.Debug.WriteLine(_playerController.Player.Error.LocalizedDescription);
-			}
-		}
-
+		/// <summary>
+		/// Indicates that the value at the specified keyPath relative to this object has changed.
+		/// </summary>
+		/// <param name="keyPath">Key-path to use to perform the value lookup.   The keypath consists of a series of lowercase ASCII-strings with no spaces in them separated by dot characters.</param>
+		/// <param name="ofObject">The of object.</param>
+		/// <param name="change">A dictionary that describes the changes that have been made to the value of the property at the key path keyPath relative to object. Entries are described in Change Dictionary Keys.</param>
+		/// <param name="context">The value that was provided when the receiver was registered to receive key-value observation notifications.</param>
+		/// <remarks>This method is invoked if you have registered an observer using the <see cref="M:Foundation.NSObject.AddObserver" /> method</remarks>
 		public override void ObserveValue(Foundation.NSString keyPath, Foundation.NSObject ofObject, Foundation.NSDictionary change, IntPtr context)
 		{
-			if (Equals(ofObject, _playerItem))
+			if (Equals(ofObject, _player))
 			{
 				if (keyPath.Equals((Foundation.NSString)"status"))
-				{
-					if (_playerItem.Status == AVPlayerItemStatus.ReadyToPlay)
-					{
-						System.Diagnostics.Debug.WriteLine("PlayerItem ReadyToPlay");
-					}
-				}
-				else if (keyPath.Equals((Foundation.NSString)"error"))
-				{
-					System.Diagnostics.Debug.WriteLine("Error");
-				}
-			}
-			else if (Equals(ofObject, _player))
-			{
-				if (keyPath.Equals((Foundation.NSString) "status"))
 				{
 					if (_player.Status == AVPlayerStatus.ReadyToPlay)
 					{
 						System.Diagnostics.Debug.WriteLine("Player ReadyToPlay");
 
 						Element.OnMediaLoaded();
+
+						if (Element.AutoPlay)
+						{
+							Element.PlayCommand.Execute(null);
+						}
 					}
 				}
-				else if (keyPath.Equals((Foundation.NSString) "error"))
+				else if (keyPath.Equals((Foundation.NSString)"error") && _player.Error != null)
 				{
 					System.Diagnostics.Debug.WriteLine("Error");
+
+					Element.OnMediaErrorOccurred(_player.Error?.LocalizedDescription ?? "Error loading player");
 				}
 			}
 
 			//base.ObserveValue(keyPath, ofObject, change, context);
 		}
+
+		#endregion Methods: Overrides
+		
+		#region Methods: Private
+		/// <summary>
+		/// Updates the or create media element.
+		/// </summary>
+		/// <param name="videoPlayer">The video player view.</param>
+		/// <param name="updateSource">if set to <c>true</c> [update source].</param>
+		private void UpdateOrCreateMediaElement(VideoPlayer videoPlayer, bool updateSource = false)
+		{
+			if (_playerController == null)
+			{
+				if (_playerController == null)
+				{
+					_playerController = new AVPlayerViewController { View = { Frame = Frame }, ShowsPlaybackControls = videoPlayer.AreControlsDisplayed };
+				}
+
+				UpdatePlayerUrl(videoPlayer.VideoSource);
+
+				SetNativeControl(_playerController.View);
+
+				// Hook up commands
+				videoPlayer.PlayCommand = new Command(() =>
+				{
+					System.Diagnostics.Debug.WriteLine("VideoPlayer: Play");
+
+					SafePlayer?.Play();
+
+					videoPlayer.MediaState = MediaState.Playing;
+				}, () =>
+				{
+					return SafePlayer?.Status == AVPlayerStatus.ReadyToPlay;
+				});
+				videoPlayer.PauseCommand = new Command(() =>
+				{
+					System.Diagnostics.Debug.WriteLine("VideoPlayer: Pause");
+
+					SafePlayer?.Pause();
+
+					videoPlayer.MediaState = MediaState.Paused;
+				});
+
+				videoPlayer.SeekCommand = new Command<TimeSpan>((timeSpan) =>
+				{
+					System.Diagnostics.Debug.WriteLine("VideoPlayer: Seek");
+
+					var dt = new CMTime {Value = (long) timeSpan.TotalSeconds};
+
+					var ms = videoPlayer.MediaState;
+					videoPlayer.MediaState = MediaState.Seeking;
+					SafePlayer.Seek(dt);
+					videoPlayer.MediaState = ms;
+
+				}, (timeSpan) =>
+				{
+					return (SafePlayer?.Status == AVPlayerStatus.ReadyToPlay) && (timeSpan.TotalMilliseconds < SafePlayer?.CurrentTime.Value) && (SafePlayer?.CurrentTime.Value > 0);
+				});
+				videoPlayer.StopCommand = new Command(() =>
+				{
+					System.Diagnostics.Debug.WriteLine("VideoPlayer: Stop");
+
+					SafePlayer?.Pause();
+					videoPlayer.MediaState = MediaState.Stopped;
+				});
+				videoPlayer.MuteCommand = new Command<bool>((muted) => { if (SafePlayer != null) SafePlayer.Muted = muted; });
+			} 
+			else if (updateSource)
+			{
+				UpdatePlayerUrl(videoPlayer.VideoSource);
+			}
+
+			_playerController.ShowsPlaybackControls = videoPlayer.AreControlsDisplayed;
+
+			if (SafePlayer != null)
+			{
+				if ((int)videoPlayer.VolumeLevel != 0)
+				{
+					SafePlayer.Volume = (float) videoPlayer.VolumeLevel / 100; // iOS is a slide scale from 0 to 1, so if divde our 0 to 100 number we should get the correct volume
+				}
+				SafePlayer.Muted = videoPlayer.IsMuted;
+			}
+		}
+
+		/// <summary>
+		/// Updates the player URL.
+		/// </summary>
+		/// <param name="url">The URL.</param>
+		private void UpdatePlayerUrl(string url)
+		{
+			if (string.IsNullOrEmpty(url)) return;
+
+			if (_player != null)
+			{
+				//_player.RemoveObserver(this, (Foundation.NSString)"status");
+				//_player.RemoveObserver(this, (Foundation.NSString)"error");
+				_player.Dispose();
+				_player = null;
+			}			
+			
+			//_player = AVPlayer.FromUrl(new Foundation.NSUrl(url));
+			_player = new AVPlayer(Foundation.NSUrl.FromString(url));
+			if (_player.Error != null)
+			{
+				System.Diagnostics.Debug.WriteLine(_player.Error.LocalizedDescription);
+
+				Element.OnMediaErrorOccurred(_player?.Error?.LocalizedDescription);
+
+				throw new InvalidOperationException(_player?.Error?.LocalizedDescription);
+			}
+
+			_player.ActionAtItemEnd = AVPlayerActionAtItemEnd.None;
+
+			//_player.AddObserver(this, (Foundation.NSString)"status", Foundation.NSKeyValueObservingOptions.Initial | Foundation.NSKeyValueObservingOptions.New, IntPtr.Zero);
+			//_player.AddObserver(this, (Foundation.NSString)"error", Foundation.NSKeyValueObservingOptions.Initial | Foundation.NSKeyValueObservingOptions.New, IntPtr.Zero);
+
+			_playerController.Player = _player;
+			if (_playerController.Player?.Error != null)
+			{
+				System.Diagnostics.Debug.WriteLine(_playerController.Player.Error.LocalizedDescription);
+
+				Element.OnMediaErrorOccurred(_playerController?.Player?.Error?.LocalizedDescription);
+
+				throw new InvalidOperationException(_playerController?.Player?.Error?.LocalizedDescription);
+			}
+		}
+		#endregion Methods: Private
+
 
 		//public override void LayoutSubviews()
 		//{

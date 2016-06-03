@@ -1,21 +1,21 @@
-using System;
-using System.ComponentModel;
 using Android.Media;
 using Android.Widget;
+using System;
+using System.ComponentModel;
 using Xam.Plugins.VideoPlayer;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
-[assembly: ExportRenderer(typeof(VideoPlayerView), typeof(VideoPlayerRenderer))]
+[assembly: ExportRenderer(typeof(VideoPlayer), typeof(VideoPlayerRenderer))]
 namespace Xam.Plugins.VideoPlayer
 {
 	/// <summary>
 	/// VideoPlayer Renderer for Android.
 	/// </summary>
-	public class VideoPlayerRenderer : ViewRenderer<VideoPlayerView,VideoView>
+	public class VideoPlayerRenderer : ViewRenderer<VideoPlayer,VideoView>
 	{
 		private VideoView _videoView;
-		//private VideoPlayerView _videoPlayerView;
+		//private VideoPlayer _videoPlayerView;
 
 	    private bool _isPaused;
 
@@ -26,7 +26,7 @@ namespace Xam.Plugins.VideoPlayer
 		{
 		}
 
-		protected override void OnElementChanged(ElementChangedEventArgs<VideoPlayerView> e)
+		protected override void OnElementChanged(ElementChangedEventArgs<VideoPlayer> e)
 		{
 			base.OnElementChanged(e);
 
@@ -34,7 +34,7 @@ namespace Xam.Plugins.VideoPlayer
 
 			if (e.OldElement != null)
 			{
-				//var oldVideoPlayerVideo = e.OldElement as VideoPlayerView;
+				//var oldVideoPlayerVideo = e.OldElement as VideoPlayer;
 			}
 
 			if (e.NewElement != null)
@@ -50,7 +50,7 @@ namespace Xam.Plugins.VideoPlayer
 
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			var videoPlayerView = sender as VideoPlayerView;
+			var videoPlayerView = sender as VideoPlayer;
 
 			if (videoPlayerView != null)
 			{
@@ -84,6 +84,7 @@ namespace Xam.Plugins.VideoPlayer
 					System.Diagnostics.Debug.WriteLine("VideoPlayer: Play");
 
 					Control.Start();
+					Element.MediaState = MediaState.Playing;
 				});
 				Element.PauseCommand = new Command(() =>
 				{
@@ -94,19 +95,25 @@ namespace Xam.Plugins.VideoPlayer
 						Control.Pause();
 
 						_isPaused = true;
+						Element.MediaState = MediaState.Paused;
 					}
 					else
 					{
 						Control.Resume();
 
 						_isPaused = false;
+						Element.MediaState = MediaState.Playing;
 					}
+
 				}, () => Control.IsPlaying);
 
 				Element.SeekCommand = new Command<TimeSpan>((timeSpan) => {
 					System.Diagnostics.Debug.WriteLine("VideoPlayer: Seek");
 
+					var ms = Element.MediaState;
+					Element.MediaState = MediaState.Seeking;
 					Control.SeekTo((int) timeSpan.TotalMilliseconds);
+					Element.MediaState = ms;
 				}, (timeSpan) =>
 				{
 					return timeSpan.TotalMilliseconds < Control.CurrentPosition &
@@ -117,6 +124,7 @@ namespace Xam.Plugins.VideoPlayer
 					System.Diagnostics.Debug.WriteLine("VideoPlayer: Stop");
 
 					Control.StopPlayback();
+					Element.MediaState = MediaState.Stopped;
 				});
 				Element.MuteCommand = new Command<bool>((muted) =>
 				{
@@ -155,7 +163,7 @@ namespace Xam.Plugins.VideoPlayer
 
 			if (Element.AutoPlay)
 			{
-				Control.Start();
+				Element.PlayCommand.Execute(null);
 			}
 
 			Element?.OnMediaLoaded();

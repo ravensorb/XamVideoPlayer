@@ -18,9 +18,6 @@ Param(
 	[bool]$updateVersion = $false,
 		
 	[Parameter()]
-	[bool]$processNuProjOutput = $false,
-	
-	[Parameter()]
 	[bool]$updateNuspecFile = $true,
 	
 	[Parameter()]
@@ -89,16 +86,14 @@ $properties = @{
 	"updateNuspecFile" = $updateNuspecFile;
 	
 	# The name or ip address of the Mac that is running the Xamarin build agent
-	"macAgentServerAddress" = $null; 
+	"macAgentServerAddress" = $null; #"10.0.1.139"
 	
 	# The user name to use to authentice for the Xamarin build agent
-	"macAgentUser" = $null; 
-	
-	"processNuProjOutput" = $processNuProjOutput;
+	"macAgentUser" = $null; #'Shawn Anderson'
 	
 	"nugetServerUrl" = 'https://nuget.org';
 	
-	"nugetAPIKey" = $null;
+	"nugetAPIKey" = "8f7a6be5-4f64-400b-95ef-e2cb9accdf8f";
 }
 
 #if (!(Get-Module -Name psake -ListAvailable)) { Install-Module -Name psake -Scope CurrentUser }

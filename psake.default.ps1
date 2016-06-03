@@ -155,6 +155,22 @@ Task Clean -Depends DisplayParams {
 	}
 }
 
+Task CleanPackages -Depends DisplayParams {
+	$ver = "$project.$script:packageVersion"
+	
+	if ($script:preReleaseNumber)
+	{
+		$ver = "$ver-pre$($script:preReleaseNumber)"
+	}
+
+	Get-ChildItem -Path $deploy_folder | Where-Object -FilterScript {
+		($_.Name.Contains($ver)) -and ($_.Extension -eq '.nupkg')    
+	} | % {
+		remove-item $_.FullName -force
+		write-host deleted $_
+	}
+}
+
 Task RestorePackages {
 	New-Item -ItemType Directory  "$source_folder\packages" -ErrorAction SilentlyContinue
 	$pathToPackages = Resolve-Path "$source_folder\packages"
@@ -163,8 +179,8 @@ Task RestorePackages {
 	Write-Host "`tRestoring Packages to: $pathToPackages" -ForegroundColor Yellow
 	Write-Host "`tUsing Nuget Config File: $nugetConfig" -ForegroundColor Yellow
 
-	Exec { & "$nuget_folder\nuget.exe" restore "$source_folder\$solution" -MSBuildVersion 14 -PackagesDirectory $pathToPackages -ConfigFile $nugetConfig }
-	Exec { & "$nuget_folder\nuget.exe" install NuProj -OutputDirectory $pathToPackages -ConfigFile $nugetConfig -Prerelease }
+	#Exec { & "$nuget_folder\nuget.exe" restore -SolutionDirectory $source_folder -PackagesDirectory $pathToPackages -ConfigFile $nugetConfig }
+	Exec { & "$nuget_folder\nuget.exe" restore "$source_folder\$solution" -PackagesDirectory $pathToPackages -ConfigFile $nugetConfig }
 }
 
 Task RestoreDependencies {
@@ -172,13 +188,6 @@ Task RestoreDependencies {
 #	{
 #		"nunit" { choco install -y nunit }
 #	}
-}
-
-Task ProcessNuProjNuSpecFiles -Precondition { return $processNuProjOutput } {
-	pushd
-	cd $nuproj_folder
-	#exec { & ".\process.ps1" }
-	popd
 }
 
 Task Set-Versions -Depends Get-Version {
