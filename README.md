@@ -36,7 +36,7 @@ Here is a sample XAML Page
         </ResourceDictionary>
     </ContentPage.Resources>
     <StackLayout Orientation="Vertical">
-        <videoPlayer:VideoPlayerView x:Name="video"
+        <videoPlayer:VideoPlayer x:Name="video"
                                      BindingContext="{Binding SelectedVideo}"
                                      HeightRequest="300"
                                      VideoSource="{Binding PlaybackUrl}"
