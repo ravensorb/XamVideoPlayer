@@ -18,6 +18,7 @@
     <dependencies>
       <group>
         <dependency id="Xamarin.Forms" version="2.2.0.31" />
+        <dependency id="PropertyChanged.Fody" version="1.29.4" />
       </group>
     </dependencies>
   </metadata>
