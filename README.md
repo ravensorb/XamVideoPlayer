@@ -69,3 +69,5 @@ Here is a sample XAML Page
     </StackLayout>
 </ContentPage>
 ```
+
+Note: Consider checking ou the following as an alternative: https://github.com/martijn00/XamarinMediaManager
